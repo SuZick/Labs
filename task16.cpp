@@ -1,77 +1,89 @@
 #include <iostream>
-#include <vector>
-#include <random>
+#include <cstdlib>
 #include <ctime>
+#include <cstring>
 
-// ===== Решение а) с использованием массивов (vector) =====
+const int MAX_SIZE = 10;
+
+// ===== Решение а) с использованием массивов =====
 
 class ArrayStack {
-    std::vector<int> data;
+    int data[MAX_SIZE];
+    int top;
 public:
+    ArrayStack() : top(-1) {
+        memset(data, 0, sizeof(data));
+    }
+
     void push(int value) {
-        data.push_back(value);
+        data[++top] = value;
     }
 
     bool pop(int &value) {
-        if (data.empty()) return false;
-        value = data.back();
-        data.pop_back();
+        if (top < 0) return false;
+        value = data[top--];
         return true;
     }
 
     bool isEmpty() const {
-        return data.empty();
+        return top < 0;
     }
 
     void print(const std::string &name) const {
         std::cout << name << ": ";
-        if (data.empty()) {
+        if (top < 0) {
             std::cout << "пуст" << std::endl;
             return;
         }
         std::cout << "[";
-        for (size_t i = 0; i < data.size(); i++) {
+        for (int i = 0; i <= top; i++) {
             std::cout << data[i];
-            if (i + 1 < data.size()) std::cout << " ";
+            if (i < top) std::cout << " ";
         }
         std::cout << "]" << std::endl;
     }
 
     int sum() const {
         int s = 0;
-        for (int v : data) s += v;
+        for (int i = 0; i <= top; i++) s += data[i];
         return s;
     }
 };
 
 class ArrayQueue {
-    std::vector<int> data;
+    int data[MAX_SIZE];
+    int size;
 public:
+    ArrayQueue() : size(0) {
+        memset(data, 0, sizeof(data));
+    }
+
     void enqueue(int value) {
-        data.push_back(value);
+        data[size++] = value;
     }
 
     bool dequeue(int &value) {
-        if (data.empty()) return false;
-        value = data.front();
-        data.erase(data.begin());
+        if (size == 0) return false;
+        value = data[0];
+        for (int i = 0; i < size - 1; i++) data[i] = data[i + 1];
+        size--;
         return true;
     }
 
     bool isEmpty() const {
-        return data.empty();
+        return size == 0;
     }
 
     void print(const std::string &name) const {
         std::cout << name << ": ";
-        if (data.empty()) {
+        if (size == 0) {
             std::cout << "пуста" << std::endl;
             return;
         }
         std::cout << "[";
-        for (size_t i = 0; i < data.size(); i++) {
+        for (int i = 0; i < size; i++) {
             std::cout << data[i];
-            if (i + 1 < data.size()) std::cout << " ";
+            if (i < size - 1) std::cout << " ";
         }
         std::cout << "]" << std::endl;
     }
@@ -201,33 +213,25 @@ public:
     }
 };
 
-// ===== Вспомогательный генератор случайных чисел =====
-
-static std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
-
-int randInt(int lo, int hi) {
-    return std::uniform_int_distribution<int>(lo, hi)(rng);
-}
-
 // ===== Задача 16: решение на массивах =====
 
 void solveWithArrays() {
     std::cout << "Решение с использованием массивов" << std::endl;
 
     ArrayStack stack;
-    int stackSize = randInt(3, 8);
+    int stackSize = rand() % 6 + 3;
     std::cout << "Формирование исходного стека (" << stackSize << " элементов):" << std::endl;
     for (int i = 0; i < stackSize; i++) {
-        int value = randInt(1, 20);
+        int value = rand() % 20 + 1;
         stack.push(value);
         std::cout << "  Добавлен элемент: " << value << std::endl;
     }
 
     ArrayQueue queue;
-    int queueSize = randInt(3, 8);
+    int queueSize = rand() % 6 + 3;
     std::cout << "\nФормирование исходной очереди (" << queueSize << " элементов):" << std::endl;
     for (int i = 0; i < queueSize; i++) {
-        int value = randInt(1, 20);
+        int value = rand() % 20 + 1;
         queue.enqueue(value);
         std::cout << "  Добавлен элемент: " << value << std::endl;
     }
@@ -275,19 +279,19 @@ void solveWithLinkedLists() {
     std::cout << "\n\nРешение с использованием динамических списков" << std::endl;
 
     LinkedStack stack;
-    int stackSize = randInt(3, 8);
+    int stackSize = rand() % 6 + 3;
     std::cout << "Формирование исходного стека (" << stackSize << " элементов):" << std::endl;
     for (int i = 0; i < stackSize; i++) {
-        int value = randInt(1, 20);
+        int value = rand() % 20 + 1;
         stack.push(value);
         std::cout << "  Добавлен элемент: " << value << std::endl;
     }
 
     LinkedQueue queue;
-    int queueSize = randInt(3, 8);
+    int queueSize = rand() % 6 + 3;
     std::cout << "\nФормирование исходной очереди (" << queueSize << " элементов):" << std::endl;
     for (int i = 0; i < queueSize; i++) {
-        int value = randInt(1, 20);
+        int value = rand() % 20 + 1;
         queue.enqueue(value);
         std::cout << "  Добавлен элемент: " << value << std::endl;
     }
@@ -330,6 +334,7 @@ void solveWithLinkedLists() {
 }
 
 int main() {
+    srand(static_cast<unsigned>(time(NULL)));
     std::cout << "Лабораторная работа: Стеки и очереди" << std::endl;
 
     solveWithArrays();
