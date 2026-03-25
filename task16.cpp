@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
+#include <clocale>
 
 const int MAX_SIZE = 10;
 
@@ -334,6 +335,7 @@ void solveWithLinkedLists() {
 }
 
 int main() {
+    setlocale(LC_ALL, "RU");
     srand(static_cast<unsigned>(time(NULL)));
     std::cout << "Лабораторная работа: Стеки и очереди" << std::endl;
 
